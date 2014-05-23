@@ -5,11 +5,11 @@
   - Stouts.nginx
   - Stouts.python
   tasks:
-    - include: 'tasks/main.yml'
+    - include: tasks/main.yml
   handlers:
-    - include: 'handlers/main.yml'
+    - include: handlers/main.yml
   vars_files:
-    - 'defaults/main.yml'
-    - .travis.yml'
+    - defaults/main.yml
+    - .travis.yml
   vars:
     redis_update_kernel: no
