@@ -9,13 +9,9 @@
 - name: Setup virtualenv
   shell: virtualenv {{sentry_home}}/venv
     creates={{sentry_home}}/venv/bin/pip
-  sudo: yes
-  sudo_user: "{{sentry_user}}"
 
 - name: Install Sentry
   pip: name=sentry executable={{sentry_home}}/venv/bin/pip
-  sudo: yes
-  sudo_user: "{{sentry_user}}"
 
 - name: Install requirements
   pip: name={{item}} executable={{sentry_home}}/venv/bin/pip
@@ -24,8 +20,6 @@
     - hiredis
     - nydus
     - django-redis-cache
-  sudo: yes
-  sudo_user: "{{sentry_user}}"
 
 - name: Prepare Sentry
   template: src=sentry.j2 dest={{sentry_home}}/sentry owner={{sentry_user}} mode=0755
@@ -39,6 +33,8 @@
   template: src=config.py.j2 dest={{sentry_home}}/config.py owner={{sentry_user}}
   notify:
     - sentry restart
+
+- file: state=directory path={{sentry_home}} owner={{sentry_user}} recurse=yes
 
 - name: Upgrade sentry
   shell: "{{sentry_home}}/sentry upgrade"
