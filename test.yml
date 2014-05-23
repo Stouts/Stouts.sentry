@@ -8,5 +8,7 @@
     - include: 'tasks/main.yml'
   handlers:
     - include: 'handlers/main.yml'
+  vars:
+    redis_update_kernel: no
   vars_files:
     - 'defaults/main.yml'
