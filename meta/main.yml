@@ -1,0 +1,21 @@
+---
+
+dependencies:
+- Stouts.nginx
+- Stouts.python
+- Stouts.redis
+- Stouts.supervisor
+
+galaxy_info:
+  author: klen
+  company: Stouts
+  description: Install and setup Sentry
+  license: MIT
+  platforms:
+  - name: Ubuntu
+    versions:
+    - all
+  categories:
+  - system
+  - development
+  - web

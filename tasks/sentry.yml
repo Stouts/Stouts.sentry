@@ -1,0 +1,59 @@
+---
+
+- name: Ensure sentry user exists
+  user: name={{sentry_user}}
+
+- name: Ensure sentry home exists
+  file: state=directory path={{sentry_home}}/logs owner={{sentry_user}} recurse=yes
+
+- name: Setup virtualenv
+  shell: virtualenv {{sentry_home}}/venv
+    creates={{sentry_home}}/venv/bin/pip
+  sudo: yes
+  sudo_user: "{{sentry_user}}"
+
+- name: Install Sentry
+  pip: name=sentry executable={{sentry_home}}/venv/bin/pip
+  sudo: yes
+  sudo_user: "{{sentry_user}}"
+
+- name: Install requirements
+  pip: name={{item}} executable={{sentry_home}}/venv/bin/pip
+  with_items:
+    - redis
+    - hiredis
+    - nydus
+    - django-redis-cache
+  sudo: yes
+  sudo_user: "{{sentry_user}}"
+
+- name: Prepare Sentry
+  template: src=sentry.j2 dest={{sentry_home}}/sentry owner={{sentry_user}} mode=0755
+
+- name: Configure Supervisor
+  template: src=supervisor.ini.j2 dest={{supervisor_incdir}}/sentry.conf
+  notify:
+    - supervisor reread
+
+- name: Configure Sentry
+  template: src=config.py.j2 dest={{sentry_home}}/config.py owner={{sentry_user}}
+  notify:
+    - sentry restart
+
+- name: Upgrade sentry
+  shell: "{{sentry_home}}/sentry upgrade"
+  sudo: yes
+  sudo_user: "{{sentry_user}}"
+
+- name: Setup initial data
+  template: src=setup.py.j2 dest={{sentry_home}}/setup.py owner={{sentry_user}} mode=0755
+
+- shell: venv/bin/python setup.py
+    chdir={{sentry_home}}
+  sudo: yes
+  sudo_user: "{{sentry_user}}"
+
+- name: Configure Nginx
+  template: src=nginx.conf.j2 dest={{nginx_sites_dir}}/sentry.conf
+  notify:
+    - nginx reload

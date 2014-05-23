@@ -1,0 +1,7 @@
+---
+
+- name: sentry restart
+  supervisorctl: name={{item}} state=restarted
+  with_items:
+    - sentry-web
+    - sentry-worker

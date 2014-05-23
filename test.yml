@@ -1,0 +1,12 @@
+- hosts: all
+  roles:
+  - Stouts.redis
+  - Stouts.supervisor
+  - Stouts.nginx
+  - Stouts.python
+  tasks:
+    - include: 'tasks/main.yml'
+  handlers:
+    - include: 'handlers/main.yml'
+  vars_files:
+    - 'defaults/main.yml'

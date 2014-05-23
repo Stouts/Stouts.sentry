@@ -1,0 +1,5 @@
+---
+
+- include: sentry.yml
+  when: sentry_enabled
+  tags: [sentry]

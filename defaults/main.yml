@@ -1,24 +1,5 @@
-Stouts.sentry
-=============
+---
 
-[![Build Status](https://travis-ci.org/Stouts/Stouts.sentry.png)](https://travis-ci.org/Stouts/Stouts.sentry)
-
-Ansible role which install and setup [Sentry](https://getsentry.com)
-
-### Requirements
-
-- [Stouts.nginx](https://github.com/Stouts/Stouts.nginx)
-- [Stouts.python](https://github.com/Stouts/Stouts.python)
-- [Stouts.redis](https://github.com/Stouts/Stouts.redis)
-- [Stouts.supervisor](https://github.com/Stouts/Stouts.supervisor)
-
-#### Recomended
-
-- [Stouts.postfix](https://github.com/Stouts/Stouts.postfix)
-
-
-#### Variables
-```yaml
 sentry_enabled: yes                                       # Enable the role
 sentry_home: /usr/lib/sentry                              # Deploy sentry to the folder
 sentry_user: sentry                                       # Run as user
@@ -82,34 +63,3 @@ sentry_email_settings: []                                 # Ex. sentry_email_set
                                                           #       - EMAIL_HOST_USER = ''
                                                           #       - EMAIL_PORT = 25
                                                           #       - EMAIL_USE_TLS = False
-```
-
-#### Usage
-
-Add `Stouts.sentry` to your roles and set vars in your playbook file.
-
-Example:
-
-```yaml
-
-- hosts: all
-
-  roles:
-  - Stouts.foundation
-  - Stouts.postfix
-  - Stouts.sentry
-
-  vars:
-    postfix_smtp_sasl_user: "username@gmail.com"
-    postfix_smtp_sasl_password: "password"
-
-```
-
-#### License
-
-Licensed under the MIT License. See the LICENSE file for details.
-
-#### Feedback, bug-reports, requests, ...
-
-Are [welcome](https://github.com/Stouts/Stouts.sentry/issues)!
-
