@@ -17,3 +17,6 @@ script:
   - ansible-playbook -i inventory test.yml --connection=local --sudo
  
 sentry_home: /home/travis/sentry
+sentry_cache_backend: ""
+sentry_broker_url: ""
+sentry_buffer: ""
