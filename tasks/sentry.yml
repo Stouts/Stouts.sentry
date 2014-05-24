@@ -4,14 +4,18 @@
   user: name={{sentry_user}}
 
 - name: Ensure sentry home exists
-  file: state=directory path={{sentry_home}}/logs owner={{sentry_user}} recurse=yes
+  file: state=directory path={{sentry_home}}/logs owner={{sentry_user}}
 
 - name: Setup virtualenv
   shell: virtualenv {{sentry_home}}/venv
     creates={{sentry_home}}/venv/bin/pip
+  sudo: yes
+  sudo_user: "{{sentry_user}}"
 
 - name: Install Sentry
   pip: name=sentry executable={{sentry_home}}/venv/bin/pip
+  sudo: yes
+  sudo_user: "{{sentry_user}}"
 
 - name: Install requirements
   pip: name={{item}} executable={{sentry_home}}/venv/bin/pip
@@ -20,6 +24,8 @@
     - hiredis
     - nydus
     - django-redis-cache
+  sudo: yes
+  sudo_user: "{{sentry_user}}"
 
 - name: Prepare Sentry
   template: src=sentry.j2 dest={{sentry_home}}/sentry owner={{sentry_user}} mode=0755

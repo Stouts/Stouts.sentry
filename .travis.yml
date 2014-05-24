@@ -33,7 +33,7 @@ script:
 
   - sudo rm -f /etc/nginx/sites-enabled/default
   - sudo /etc/init.d/nginx restart
-  - curl localhost
+  - curl localhost || exit 1
  
 sentry_home: /home/travis/build/sentry
 sentry_cache_backend: ""
