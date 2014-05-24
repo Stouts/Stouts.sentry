@@ -4,7 +4,9 @@
   user: name={{sentry_user}}
 
 - name: Ensure sentry home exists
-  file: state=directory path={{sentry_home}}/logs owner={{sentry_user}}
+  file: state=directory path={{sentry_home}} owner={{sentry_user}}
+
+- file: state=directory path={{sentry_home}}/logs owner={{sentry_user}}
 
 - name: Setup virtualenv
   shell: virtualenv {{sentry_home}}/venv
