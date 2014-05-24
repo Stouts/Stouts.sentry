@@ -39,3 +39,5 @@ sentry_home: /home/travis/build/sentry
 sentry_cache_backend: ""
 sentry_broker_url: ""
 sentry_buffer: ""
+python_pip_latest:
+  - virtualenv
