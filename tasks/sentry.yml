@@ -31,21 +31,25 @@
 
 - name: Configure Sentry
   template: src=config.py.j2 dest={{sentry_home}}/config.py owner={{sentry_user}}
+  register: config
   notify:
     - sentry restart
 
 - file: state=directory path={{sentry_home}} owner={{sentry_user}} recurse=yes
 
 - name: Upgrade sentry
-  shell: "{{sentry_home}}/sentry upgrade"
+  shell: "{{sentry_home}}/sentry upgrade >> {{sentry_home}}/logs/sentry.log"
+  when: config.changed
   sudo: yes
   sudo_user: "{{sentry_user}}"
 
 - name: Setup initial data
   template: src=setup.py.j2 dest={{sentry_home}}/setup.py owner={{sentry_user}} mode=0755
+  register: setup
 
 - shell: venv/bin/python setup.py
     chdir={{sentry_home}}
+  when: setup.changed
   sudo: yes
   sudo_user: "{{sentry_user}}"
 
