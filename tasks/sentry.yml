@@ -29,6 +29,10 @@
   sudo: yes
   sudo_user: "{{sentry_user}}"
 
+- name: Install extensions
+  pip: name={{item}} executable={{sentry_home}}/venv/bin/pip
+  with_items: sentry_extensions
+
 - name: Prepare Sentry
   template: src=sentry.j2 dest={{sentry_home}}/sentry owner={{sentry_user}} mode=0755
 

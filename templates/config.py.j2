@@ -74,3 +74,8 @@ TRELLO_API_KEY = '{{sentry_trello_api_key}}'
 TRELLO_API_SECRET = '{{sentry_trello_api_secret}}'
 BITBUCKET_CONSUMER_KEY = '{{sentry_bitbucket_consumer_key}}'
 BITBUCKET_CONSUMER_SECRET = '{{sentry_bitbucket_consumer_secret}}'
+
+# Additional settings
+{% for option in sentry_config_additional or [] %}
+{{option}}
+{% endfor %}

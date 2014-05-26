@@ -18,12 +18,16 @@ Ansible role which install and setup [Sentry](https://getsentry.com)
 
 
 #### Variables
+
+The role variables and default values.
+
 ```yaml
 sentry_enabled: yes                                       # Enable the role
 sentry_home: /usr/lib/sentry                              # Deploy sentry to the folder
 sentry_user: sentry                                       # Run as user
 sentry_hostname: "{{inventory_hostname}}"                 # Bind to hostname
 sentry_secret_key: 1LsmGR1DIyCJ5n2bRG5IVOFHdzEPkTKlW0RzxZVe9S0vc
+sentry_extensions: []                                     # List of sentry-extensions
 
 # Initial data
 sentry_admin_username: admin                              # Creates admin user with credentials, set blank for skip
@@ -32,6 +36,8 @@ sentry_admin_password: admin
 sentry_team_name: sentry                                  # Creates team for admin user, set blank for skip
 sentry_project_name: sentry                               # Creates project for admin user, set blank for skip
 sentry_project_platform: python
+
+sentry_config_additional: []                              # List of additional options
 
 # Setup gunicorn
 sentry_web_host: 127.0.0.1
