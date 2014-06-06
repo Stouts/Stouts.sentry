@@ -1,0 +1,15 @@
+#!upstart
+
+description "Start Sentry WSGI"
+
+start on (local-filesystems and runlevel [2345])
+stop on runlevel [!2345]
+
+respawn
+
+limit nofile 65536 65536
+console log
+chdir {{sentry_home}}
+setuid {{sentry_user}}
+
+exec {{sentry_home}}/venv/bin/sentry --config={{sentry_home}}/config.py celery worker -B

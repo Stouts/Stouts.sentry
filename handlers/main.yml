@@ -1,7 +1,13 @@
 ---
 
 - name: sentry restart
-  supervisorctl: name={{item}} state=restarted
+  service: name={{item}} state=restarted
+  with_items:
+    - sentry-web
+    - sentry-worker
+
+- name: sentry reload
+  service: name={{item}} state=reloaded
   with_items:
     - sentry-web
     - sentry-worker

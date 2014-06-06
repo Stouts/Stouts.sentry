@@ -1,26 +1,26 @@
 ---
-
+# vim:sw=2:ft=ansible
 - name: Ensure sentry user exists
   user: name={{sentry_user}}
 
 - name: Ensure sentry home exists
-  file: state=directory path={{sentry_home}} owner={{sentry_user}}
-
-- file: state=directory path={{sentry_home}}/logs owner={{sentry_user}}
+  file: state=directory path={{item}} owner={{sentry_user}}
+  with_items:
+    - "{{sentry_home}}"
+    - "{{sentry_home}}/log"
 
 - name: Setup virtualenv
-  shell: virtualenv {{sentry_home}}/venv
-    creates={{sentry_home}}/venv/bin/pip
+  shell: virtualenv {{sentry_home}}/env creates={{sentry_home}}/env/bin/pip
   sudo: yes
   sudo_user: "{{sentry_user}}"
 
 - name: Install Sentry
-  pip: name=sentry executable={{sentry_home}}/venv/bin/pip
+  pip: name=sentry executable={{sentry_home}}/env/bin/pip
   sudo: yes
   sudo_user: "{{sentry_user}}"
 
 - name: Install requirements
-  pip: name={{item}} executable={{sentry_home}}/venv/bin/pip
+  pip: name={{item}} executable={{sentry_home}}/env/bin/pip
   with_items:
     - redis
     - hiredis
@@ -30,16 +30,19 @@
   sudo_user: "{{sentry_user}}"
 
 - name: Install extensions
-  pip: name={{item}} executable={{sentry_home}}/venv/bin/pip
+  pip: name={{item}} executable={{sentry_home}}/env/bin/pip
   with_items: sentry_extensions
 
 - name: Prepare Sentry
   template: src=sentry.j2 dest={{sentry_home}}/sentry owner={{sentry_user}} mode=0755
 
-- name: Configure Supervisor
-  template: src=supervisor.ini.j2 dest={{supervisor_incdir}}/sentry.conf
+- name: Configure Upstart
+  template: src={{item}}.conf.j2 dest=/etc/init/{{item}}.conf
+  with_items:
+    - sentry-web
+    - sentry-worker
   notify:
-    - supervisor reread
+    - sentry reload
 
 - name: Configure Sentry
   template: src=config.py.j2 dest={{sentry_home}}/config.py owner={{sentry_user}}
