@@ -3,7 +3,7 @@
 - name: Ensure sentry user exists
   user: name={{sentry_user}}
 
-- name: Ensure sentry home exists
+- name: Ensure sentry directories exists
   file: state=directory path={{item}} owner={{sentry_user}}
   with_items:
     - "{{sentry_home}}"
@@ -62,7 +62,7 @@
   template: src=setup.py.j2 dest={{sentry_home}}/setup.py owner={{sentry_user}} mode=0755
   register: setup
 
-- shell: venv/bin/python setup.py
+- shell: env/bin/python setup.py
     chdir={{sentry_home}}
   when: setup.changed
   sudo: yes
