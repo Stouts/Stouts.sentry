@@ -72,3 +72,6 @@
   template: src=nginx.conf.j2 dest={{nginx_sites_dir}}/sentry.conf
   notify:
     - nginx reload
+
+- name: Setup logrotate
+  template: src=logrotate.conf.j2 dest=/etc/logrotate.d/sentry.conf
