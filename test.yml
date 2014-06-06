@@ -1,7 +1,6 @@
 - hosts: all
   roles:
   - Stouts.redis
-  - Stouts.supervisor
   - Stouts.nginx
   - Stouts.python
   tasks:
