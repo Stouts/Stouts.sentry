@@ -19,7 +19,7 @@
   sudo: yes
   sudo_user: "{{sentry_user}}"
 
-- name: Install requirements
+- name: Install requirements for Redis
   pip: name={{item}} executable={{sentry_home}}/env/bin/pip
   with_items:
     - redis
@@ -28,6 +28,13 @@
     - django-redis-cache
   sudo: yes
   sudo_user: "{{sentry_user}}"
+  when: sentry_configure_redis
+
+- name: Install requirements for MySQL
+  pip: name={{ item }} executable={{ sentry_home }}/env/bin/pip
+  with_items:
+    - mysql-python
+  when: "'mysql' in sentry_db_engine|lower()"
 
 - name: Install extensions
   pip: name={{item}} executable={{sentry_home}}/env/bin/pip
@@ -72,6 +79,8 @@
   template: src=nginx.conf.j2 dest={{nginx_sites_dir}}/sentry.conf
   notify:
     - nginx reload
+  when: sentry_configure_nginx
 
 - name: Setup logrotate
   template: src=logrotate.conf.j2 dest=/etc/logrotate.d/sentry.conf
+  when: sentry_configure_logrotate
