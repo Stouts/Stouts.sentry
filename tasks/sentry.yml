@@ -28,7 +28,7 @@
     - django-redis-cache
   sudo: yes
   sudo_user: "{{sentry_user}}"
-  when: sentry_configure_redis
+  when: redis_enabled
 
 - name: Install requirements for MySQL
   pip: name={{ item }} executable={{ sentry_home }}/env/bin/pip
@@ -79,8 +79,7 @@
   template: src=nginx.conf.j2 dest={{nginx_sites_dir}}/sentry.conf
   notify:
     - nginx reload
-  when: sentry_configure_nginx
+  when: nginx_enabled
 
 - name: Setup logrotate
   template: src=logrotate.conf.j2 dest=/etc/logrotate.d/sentry.conf
-  when: sentry_configure_logrotate

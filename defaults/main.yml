@@ -31,7 +31,6 @@ sentry_db_host: ""
 sentry_db_port: ""
 sentry_db_options: {}
 
-sentry_configure_redis: yes
 # Setup cache
 sentry_cache_backend: "redis_cache.RedisCache"
 sentry_cache_location: "{{redis_bind}}:{{redis_port}}"
@@ -68,11 +67,7 @@ sentry_email_settings: []                                 # Ex. sentry_email_set
                                                           #       - EMAIL_PORT = 25
                                                           #       - EMAIL_USE_TLS = False
 
-sentry_configure_python: yes
-sentry_configure_nginx: yes
-sentry_configure_logrotate: yes
-
 # The following parameters are for toggling dependencies
-redis_enabled: "{{ sentry_configure_redis }}"
-nginx_enabled: "{{ sentry_configure_nginx }}"
-python_enabled: "{{ sentry_configure_python }}"
+redis_enabled: yes
+nginx_enabled: yes
+python_enabled: yes
