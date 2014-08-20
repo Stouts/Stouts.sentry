@@ -2,32 +2,32 @@
 # Do NOT modify this file by hand!
 
 {{sentry_home}}/uwsgi.log {
-  sshcreate 644 {{sentry_user}} {{sentry_user}}
-  sshcompress
-  sshcopytruncate
-  sshdaily
-  sshdateext
-  sshrotate 7
-  sshsize 1M
+  create 644 {{sentry_user}} {{sentry_user}}
+  compress
+  copytruncate
+  daily
+  dateext
+  rotate 7
+  size 1M
 }
 
 {{sentry_home}}/log/nginx.log {
-  sshcreate 644 {{sentry_user}} {{sentry_user}}
-  sshcompress
-  sshcopytruncate
-  sshdaily
-  sshdateext
-  sshrotate 7
-  sshsize 1M
+  create 644 {{sentry_user}} {{sentry_user}}
+  compress
+  copytruncate
+  daily
+  dateext
+  rotate 7
+  size 1M
 }
 
 {{sentry_home}}/log/nginx-errors.log {
-  sshcreate 644 {{sentry_user}} {{sentry_user}}
-  sshcompress
-  sshcopytruncate
-  sshdaily
-  sshdateext
-  sshrotate 7
-  sshsize 1M
+  create 644 {{sentry_user}} {{sentry_user}}
+  compress
+  copytruncate
+  daily
+  dateext
+  rotate 7
+  size 1M
 }
 
