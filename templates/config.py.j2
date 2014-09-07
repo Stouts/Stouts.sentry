@@ -8,7 +8,7 @@ import os.path
 CONF_ROOT = os.path.dirname(__file__)
 
 SECRET_KEY = '{{sentry_secret_key}}'
-SENTRY_URL_PREFIX = 'http://{{sentry_hostname}}'
+SENTRY_URL_PREFIX = '{{ "https" if sentry_https_url else "http" }}://{{sentry_hostname}}'
 
 DATABASES = {
     'default': {

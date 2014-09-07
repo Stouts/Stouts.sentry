@@ -25,7 +25,8 @@ The role variables and default values.
 sentry_enabled: yes                                       # Enable the role
 sentry_home: /usr/lib/sentry                              # Deploy sentry to the folder
 sentry_user: sentry                                       # Run as user
-sentry_hostname: "{{inventory_hostname}}"                 # Bind to hostname
+sentry_hostname: "{{inventory_hostname}}"
+sentry_https_url: no
 sentry_secret_key: 1LsmGR1DIyCJ5n2bRG5IVOFHdzEPkTKlW0RzxZVe9S0vc
 sentry_extensions: []                                     # List of sentry-extensions
 
@@ -88,6 +89,11 @@ sentry_email_settings: []                                 # Ex. sentry_email_set
                                                           #       - EMAIL_HOST_USER = ''
                                                           #       - EMAIL_PORT = 25
                                                           #       - EMAIL_USE_TLS = False
+
+# The following parameters are for toggling dependencies
+redis_enabled: yes
+nginx_enabled: yes
+python_enabled: yes
 ```
 
 #### Usage
