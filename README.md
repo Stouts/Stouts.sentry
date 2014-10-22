@@ -1,7 +1,9 @@
 Stouts.sentry
 =============
 
-[![Build Status](https://travis-ci.org/Stouts/Stouts.sentry.png)](https://travis-ci.org/Stouts/Stouts.sentry)
+[![Build Status](http://img.shields.io/travis/Stouts/Stouts.centry.svg?style=flat-square)](https://travis-ci.org/Stouts/Stouts.centry)
+[![Galaxy](http://img.shields.io/badge/galaxy-Stouts.centry-blue.svg?style=flat-square)](https://galaxy.centry.com/list#/roles/935)
+[![Tag](http://img.shields.io/github/tag/Stouts/Stouts.centry.svg?style=flat-square)]()
 
 Ansible role which install and setup [Sentry](https://getsentry.com)
 
