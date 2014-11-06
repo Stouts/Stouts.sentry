@@ -10,8 +10,8 @@ server {
     listen     80;
     server_name {{sentry_hostname}};
 
-    access_log {{sentry_home}}/log/nginx.log;
-    error_log {{sentry_home}}/log/nginx-errors.log;
+    access_log {{sentry_access_log}};
+    error_log {{sentry_error_log}};
 
     proxy_set_header   Host                 $http_host;
     proxy_set_header   X-Real-IP            $remote_addr;

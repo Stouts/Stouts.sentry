@@ -16,8 +16,8 @@ DATABASES = {
         'NAME': '{{sentry_db_name}}',
         'USER': '{{sentry_db_user}}',
         'PASSWORD': '{{sentry_db_password}}',
-        'HOST': '{{sentry_db_host}}',
-        'PORT': '{{sentry_db_port}}',
+        {% if sentry_db_host %}'HOST': '{{sentry_db_host}}',{% endif %}
+        {% if sentry_db_port %}'PORT': '{{sentry_db_port}}',{% endif %}
         'OPTIONS': {{sentry_db_options|to_nice_json}}
     }
 }

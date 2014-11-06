@@ -4,10 +4,7 @@
   user: name={{sentry_user}}
 
 - name: Ensure sentry directories exists
-  file: state=directory path={{item}} owner={{sentry_user}}
-  with_items:
-    - "{{sentry_home}}"
-    - "{{sentry_home}}/log"
+  file: state=directory path={{sentry_home}} owner={{sentry_user}}
 
 - name: Setup virtualenv
   shell: virtualenv {{sentry_home}}/env creates={{sentry_home}}/env/bin/pip
@@ -31,10 +28,12 @@
   when: redis_enabled
 
 - name: Install requirements for MySQL
-  pip: name={{ item }} executable={{ sentry_home }}/env/bin/pip
-  with_items:
-    - mysql-python
+  pip: name=mysql-python executable={{ sentry_home }}/env/bin/pip
   when: "'mysql' in sentry_db_engine|lower()"
+
+- name: Install requirements for Postgresql
+  pip: name=psycopg2 executable={{ sentry_home }}/env/bin/pip
+  when: "'psycopg2' in sentry_db_engine|lower()"
 
 - name: Install extensions
   pip: name={{item}} executable={{sentry_home}}/env/bin/pip
@@ -54,8 +53,7 @@
 - name: Configure Sentry
   template: src=config.py.j2 dest={{sentry_home}}/config.py owner={{sentry_user}}
   register: config
-  notify:
-    - sentry restart
+  notify: [sentry restart]
 
 - file: state=directory path={{sentry_home}} owner={{sentry_user}} recurse=yes
 
@@ -80,6 +78,3 @@
   notify:
     - nginx reload
   when: nginx_enabled
-
-- name: Setup logrotate
-  template: src=logrotate.conf.j2 dest=/etc/logrotate.d/sentry.conf
