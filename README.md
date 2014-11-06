@@ -1,9 +1,8 @@
 Stouts.sentry
 =============
 
-[![Build Status](http://img.shields.io/travis/Stouts/Stouts.centry.svg?style=flat-square)](https://travis-ci.org/Stouts/Stouts.centry)
-[![Galaxy](http://img.shields.io/badge/galaxy-Stouts.centry-blue.svg?style=flat-square)](https://galaxy.centry.com/list#/roles/935)
-[![Tag](http://img.shields.io/github/tag/Stouts/Stouts.centry.svg?style=flat-square)]()
+[![Build Status](http://img.shields.io/travis/Stouts/Stouts.sentry.svg?style=flat-square)](https://travis-ci.org/Stouts/Stouts.sentry)
+[![Galaxy](http://img.shields.io/badge/galaxy-Stouts.sentry-blue.svg?style=flat-square)](https://galaxy.sentry.com/list#/roles/935)
 
 Ansible role which install and setup [Sentry](https://getsentry.com)
 
@@ -12,7 +11,6 @@ Ansible role which install and setup [Sentry](https://getsentry.com)
 - [Stouts.nginx](https://github.com/Stouts/Stouts.nginx)
 - [Stouts.python](https://github.com/Stouts/Stouts.python)
 - [Stouts.redis](https://github.com/Stouts/Stouts.redis)
-- [Stouts.supervisor](https://github.com/Stouts/Stouts.supervisor)
 
 #### Recomended
 
@@ -36,9 +34,11 @@ sentry_extensions: []                                     # List of sentry-exten
 sentry_admin_username: admin                              # Creates admin user with credentials, set blank for skip
 sentry_admin_email: admin@{{sentry_hostname}}
 sentry_admin_password: admin
-sentry_team_name: sentry                                  # Creates team for admin user, set blank for skip
-sentry_project_name: sentry                               # Creates project for admin user, set blank for skip
-sentry_project_platform: python
+sentry_teams: [sentry]                                    # Creates teams for admin user, set blank for skip
+sentry_projects:                                          # Creates project for admin user, set blank for skip
+- name: sentry
+  platform: python
+  team: sentry
 
 sentry_config_additional: []                              # List of additional options
 
@@ -91,6 +91,10 @@ sentry_email_settings: []                                 # Ex. sentry_email_set
                                                           #       - EMAIL_HOST_USER = ''
                                                           #       - EMAIL_PORT = 25
                                                           #       - EMAIL_USE_TLS = False
+
+# Logging
+sentry_access_log: /var/log/sentry-access.log
+sentry_error_log: /var/log/sentry-error.log
 
 # The following parameters are for toggling dependencies
 redis_enabled: yes
