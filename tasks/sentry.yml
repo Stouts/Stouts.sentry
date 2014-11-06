@@ -7,7 +7,7 @@
   file: state=directory path={{sentry_home}} owner={{sentry_user}}
 
 - name: Setup virtualenv
-  shell: virtualenv {{sentry_home}}/env creates={{sentry_home}}/env/bin/pip
+  shell: virtualenv {{sentry_home}}/env --python=python creates={{sentry_home}}/env/bin/pip
   sudo: yes
   sudo_user: "{{sentry_user}}"
 
