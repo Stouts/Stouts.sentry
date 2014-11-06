@@ -58,7 +58,7 @@
 - file: state=directory path={{sentry_home}} owner={{sentry_user}} recurse=yes
 
 - name: Upgrade sentry
-  shell: "{{sentry_home}}/sentry upgrade >> {{sentry_home}}/log/sentry.log"
+  shell: "{{sentry_home}}/sentry upgrade"
   when: config.changed
   sudo: yes
   sudo_user: "{{sentry_user}}"
