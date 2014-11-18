@@ -7,7 +7,7 @@ limit_req_status 429;
 
 server {
 
-    listen     80;
+    listen     {{ sentry_port|default(80) }};
     server_name {{sentry_hostname}};
 
     access_log {{sentry_access_log}};
