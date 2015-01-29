@@ -12,7 +12,7 @@
   sudo_user: "{{sentry_user}}"
 
 - name: Install Sentry
-  pip: name=sentry executable={{sentry_home}}/env/bin/pip
+  pip: name=sentry executable={{sentry_home}}/env/bin/pip version={{sentry_version}}
   sudo: yes
   sudo_user: "{{sentry_user}}"
 
@@ -81,3 +81,9 @@
 - name: Enable Nginx site
   file: src={{nginx_dir|default('/etc/nginx')}}/sites-available/sentry.conf dest={{nginx_dir|default('/etc/nginx')}}/sites-enabled/sentry.conf state=link
   when: nginx_enabled
+
+- name: Ensure Sentry is started
+  service: name={{item}} state=started
+  with_items:
+  - sentry-web
+  - sentry-worker
