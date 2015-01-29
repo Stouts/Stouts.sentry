@@ -11,6 +11,10 @@
   sudo: yes
   sudo_user: "{{sentry_user}}"
 
+- name: Install Dependencies
+  apt: name={{item}}
+  with_items: [libxml2-dev, libxslt1-dev]
+
 - name: Install Sentry
   pip: name=sentry executable={{sentry_home}}/env/bin/pip version={{sentry_version}}
   sudo: yes
