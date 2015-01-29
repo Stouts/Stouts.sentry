@@ -22,6 +22,7 @@ The role variables and default values.
 
 ```yaml
 sentry_enabled: yes                                       # Enable the role
+sentry_version: 7.1.4
 sentry_home: /usr/lib/sentry                              # Deploy sentry to the folder
 sentry_user: sentry                                       # Run as user
 sentry_hostname: "{{inventory_hostname}}"
