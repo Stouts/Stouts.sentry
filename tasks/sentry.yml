@@ -13,7 +13,7 @@
 
 - name: Install Dependencies
   apt: name={{item}}
-  with_items: [libxml2-dev, libxslt1-dev]
+  with_items: [libxml2-dev, libxslt1-dev, zlib1g-dev]
 
 - name: Install Sentry
   pip: name=sentry executable={{sentry_home}}/env/bin/pip version={{sentry_version}}
