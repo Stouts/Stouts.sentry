@@ -1,0 +1,6 @@
+---
+
+- name: sentry-install | Add repository
+  apt: pkg={{item}}
+  with_items: [libxml2-dev, libxslt1-dev]
+
