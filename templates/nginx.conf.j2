@@ -21,11 +21,11 @@ server {
 
     keepalive_timeout 0;
 
-    proxy_read_timeout 5s;
-    proxy_send_timeout 5s;
-    send_timeout 5s;
-    resolver_timeout 5s;
-    client_body_timeout 5s;
+    proxy_read_timeout {{sentry_nginx_timeout}};
+    proxy_send_timeout {{sentry_nginx_timeout}};
+    send_timeout {{sentry_nginx_timeout}};
+    resolver_timeout {{sentry_nginx_timeout}};
+    client_body_timeout {{sentry_nginx_timeout}};
 
     client_max_body_size 150k;
     client_body_buffer_size 150k;

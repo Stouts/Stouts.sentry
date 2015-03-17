@@ -76,6 +76,8 @@ sentry_email_settings: []                                 # Ex. sentry_email_set
 sentry_access_log: /var/log/sentry-access.log
 sentry_error_log: /var/log/sentry-error.log
 
+sentry_nginx_timeout: 15s
+
 # The following parameters are for toggling dependencies
 redis_enabled: yes
 nginx_enabled: yes
