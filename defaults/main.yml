@@ -11,6 +11,11 @@ sentry_https_url: no
 sentry_secret_key: 1LsmGR1DIyCJ5n2bRG5IVOFHdzEPkTKlW0RzxZVe9S0vc
 sentry_extensions: []                                     # List of sentry-extensions
 
+# Python settings
+sentry_python: /usr/bin/python                            # Override this to python3.4 if you want to use
+                                                          # different Python version
+
+
 # Initial data
 sentry_admin_username: admin                              # Creates admin user with credentials, set blank for skip
 sentry_admin_email: admin@{{sentry_hostname}}
