@@ -22,7 +22,7 @@ The role variables and default values.
 
 ```yaml
 sentry_enabled: yes                                       # Enable the role
-sentry_version: 7.1.4
+sentry_version: 7.4.3
 sentry_home: /usr/lib/sentry                              # Deploy sentry to the folder
 sentry_user: sentry                                       # Run as user
 sentry_hostname: "{{inventory_hostname}}"
@@ -30,6 +30,13 @@ sentry_port: 80
 sentry_https_url: no
 sentry_secret_key: 1LsmGR1DIyCJ5n2bRG5IVOFHdzEPkTKlW0RzxZVe9S0vc
 sentry_extensions: []                                     # List of sentry-extensions
+
+# Python configuration
+sentry_python: python2.7                                  # In the case of multiple Python  installations
+                                                          # Pick one for Sentry using specific virtualenv command
+
+sentry_ssl_certificate:                                   # SSL certificate file - also turns on HTTPS on Nginx
+sentry_ssl_certificate_key:                               # Key file for SSL cert
 
 # Initial data
 sentry_admin_username: admin                              # Creates admin user with credentials, set blank for skip
@@ -96,6 +103,8 @@ sentry_email_settings: []                                 # Ex. sentry_email_set
 # Logging
 sentry_access_log: /var/log/sentry-access.log
 sentry_error_log: /var/log/sentry-error.log
+
+sentry_nginx_timeout: 15s
 
 # The following parameters are for toggling dependencies
 redis_enabled: yes
