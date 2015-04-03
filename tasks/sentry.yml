@@ -6,17 +6,26 @@
 - name: Ensure sentry directories exists
   file: state=directory path={{sentry_home}} owner={{sentry_user}}
 
-- name: Setup virtualenv
-  shell: virtualenv {{sentry_home}}/env --python=python creates={{sentry_home}}/env/bin/pip
+- name: Install Dependencies
+  apt: name={{item}}
+  with_items: [libxml2-dev, libxslt1-dev, zlib1g-dev, libffi-dev]
+
+# Try to create virtualenv only if it doesn't exist.
+# This way we can re-run the playbook without errors.
+- name: Check existince of Sentry virtualenv
+  stat: path={{sentry_home}}/env
+  register: sentry_has_virtualenv
   sudo: yes
   sudo_user: "{{sentry_user}}"
 
-- name: Install Dependencies
-  apt: name={{item}}
-  with_items: [libxml2-dev, libxslt1-dev, zlib1g-dev]
+- name: Create virtualenv for Sentry using chosen Python
+  when: sentry_has_virtualenv.stat.exists == False
+  shell: virtualenv --python={{sentry_python}} {{sentry_home}}/env
+  sudo: yes
+  sudo_user: "{{sentry_user}}"
 
 - name: Install Sentry
-  pip: name=sentry executable={{sentry_home}}/env/bin/pip version={{sentry_version}}
+  pip: name=sentry executable={{sentry_home}}/env/bin/pip version={{sentry_version}}  virtualenv="{{sentry_home}}"/env
   sudo: yes
   sudo_user: "{{sentry_user}}"
 
