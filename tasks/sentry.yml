@@ -11,10 +11,16 @@
   with_items: [libxml2-dev, libxslt1-dev, zlib1g-dev, libffi-dev]
 
 # Try to create virtualenv only if it doesn't exist.
-# This way we can rerun the playbook without errors.
-# true && hack at the start of the line, otherwise one gets YAML syntax errors
+# This way we can re-run the playbook without errors.
+- name: Check existince of created virtualenv
+  stat: path={{sentry_home}}/env
+  register: sentry_has_virtualenv
+  sudo: yes
+  sudo_user: "{{sentry_user}}"
+
 - name: Create virtualenv for Sentry using chosen Python
-  shell: true && [[ ! -d {{sentry_home}}/env ]] || virtualenv --python={{sentry_python}} {{sentry_home}}/env
+  when: sentry_has_virtualenv.stat.exists == False
+  shell: virtualenv --python={{sentry_python}} {{sentry_home}}/env
   sudo: yes
   sudo_user: "{{sentry_user}}"
 
