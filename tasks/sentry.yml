@@ -6,17 +6,12 @@
 - name: Ensure sentry directories exists
   file: state=directory path={{sentry_home}} owner={{sentry_user}}
 
-- name: Setup virtualenv
-  shell: virtualenv {{sentry_home}}/env --python=python creates={{sentry_home}}/env/bin/pip
-  sudo: yes
-  sudo_user: "{{sentry_user}}"
-
 - name: Install Dependencies
   apt: name={{item}}
-  with_items: [libxml2-dev, libxslt1-dev, zlib1g-dev]
+  with_items: [libxml2-dev, libxslt1-dev, zlib1g-dev,libffi-dev, python-virtualenv, python-dev]
 
 - name: Install Sentry
-  pip: name=sentry executable={{sentry_home}}/env/bin/pip version={{sentry_version}}
+  pip: name=sentry executable={{sentry_home}}/env/bin/pip version={{sentry_version}} virtualenv="{{sentry_home}}"/env
   sudo: yes
   sudo_user: "{{sentry_user}}"
 

@@ -23,6 +23,8 @@ DATABASES = {
 }
 
 {% if sentry_cache_backend and sentry_cache_location %}
+SENTRY_CACHE = 'sentry.cache.django.DjangoCache'
+
 CACHES = {
     'default': {
         'BACKEND': '{{sentry_cache_backend}}',
