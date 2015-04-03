@@ -6,10 +6,6 @@
 - name: Ensure sentry directories exists
   file: state=directory path={{sentry_home}} owner={{sentry_user}}
 
-- name: Install Dependencies
-  apt: name={{item}}
-  with_items: [libxml2-dev, libxslt1-dev, zlib1g-dev, libffi-dev]
-
 # Try to create virtualenv only if it doesn't exist.
 # This way we can re-run the playbook without errors.
 - name: Check existince of Sentry virtualenv
