@@ -11,7 +11,7 @@
   with_items: [libxml2-dev, libxslt1-dev, zlib1g-dev,libffi-dev, python-virtualenv, python-dev]
 
 - name: Install Sentry
-  pip: name=sentry executable={{sentry_home}}/env/bin/pip version={{sentry_version}} virtualenv="{{sentry_home}}"/env
+  pip: name=sentry executable={{sentry_home}}/env/bin/pip version={{sentry_version}} virtualenv_command="{{sentry_virtualenv_command}}" virtualenv="{{sentry_home}}"/env
   sudo: yes
   sudo_user: "{{sentry_user}}"
 

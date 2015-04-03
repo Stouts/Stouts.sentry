@@ -10,6 +10,9 @@ sentry_https_url: no
 sentry_secret_key: 1LsmGR1DIyCJ5n2bRG5IVOFHdzEPkTKlW0RzxZVe9S0vc
 sentry_extensions: []                                     # List of sentry-extensions
 
+sentry_virtualenv_command: virtualenv2.7                  # In the case of multiple Python installations
+                                                          # Pick one for Sentry using specific virtualenv command
+
 sentry_ssl_certificate:                                   # SSL certificate file - also turns on HTTPS on Nginx
 sentry_ssl_certificate_key:                               # Key file for SSL cert
 
