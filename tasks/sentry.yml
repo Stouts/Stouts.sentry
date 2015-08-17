@@ -51,13 +51,11 @@
 - name: Prepare Sentry
   template: src=sentry.j2 dest={{sentry_home}}/sentry owner={{sentry_user}} mode=0755
 
-- name: Configure Upstart
-  template: src={{item}}.conf.j2 dest=/etc/init/{{item}}.conf
-  with_items:
-    - sentry-web
-    - sentry-worker
-  notify:
-    - sentry reload
+- include: services.deb.yml
+  when: ansible_os_family == 'Debian'
+
+- include: services.red.yml
+  when: ansible_os_family == 'RedHat'
 
 - name: Configure Sentry
   template: src=config.py.j2 dest={{sentry_home}}/config.py owner={{sentry_user}}
@@ -67,7 +65,7 @@
 - file: state=directory path={{sentry_home}} owner={{sentry_user}} recurse=yes
 
 - name: Upgrade sentry
-  shell: "{{sentry_home}}/sentry upgrade"
+  shell: "{{sentry_home}}/sentry --config={{sentry_home}}/config.py upgrade"
   when: config.changed
   sudo: yes
   sudo_user: "{{sentry_user}}"
@@ -83,12 +81,8 @@
   sudo_user: "{{sentry_user}}"
 
 - name: Configure Nginx
-  template: src=nginx.conf.j2 dest={{nginx_dir|default('/etc/nginx')}}/sites-available/sentry.conf
+  template: src=nginx.conf.j2 dest={{nginx_dir|default('/etc/nginx')}}/sites-enabled/sentry.conf
   notify: [nginx reload]
-  when: nginx_enabled
-
-- name: Enable Nginx site
-  file: src={{nginx_dir|default('/etc/nginx')}}/sites-available/sentry.conf dest={{nginx_dir|default('/etc/nginx')}}/sites-enabled/sentry.conf state=link
   when: nginx_enabled
 
 - name: Ensure Sentry is started

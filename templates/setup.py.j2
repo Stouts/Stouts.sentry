@@ -17,7 +17,7 @@ if created:
 {% for team in sentry_teams %}
 org, created = Organization.objects.get_or_create(name="{{team}}", defaults={"owner": admin})
 om, created = OrganizationMember.objects.get_or_create(organization=org, user=admin, type=0, email=admin.email)
-team, created = Team.objects.get_or_create(name="{{team}}", organization=org, defaults={"owner": admin})
+team, created = Team.objects.get_or_create(name="{{team}}", organization=org)
 {% for project in sentry_projects %}
 {% if project.team|default('sentry') == team %}
 project, created = Project.objects.get_or_create(

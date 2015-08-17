@@ -1,0 +1,9 @@
+---
+
+- name: Configure Services
+  template: src={{item}}.conf.j2 dest=/etc/init/{{item}}.conf
+  with_items:
+  - sentry-web
+  - sentry-worker
+  notify:
+  - sentry reload

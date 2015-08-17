@@ -1,6 +1,6 @@
 ---
 
-- name: sentry-install | Install debian packages
+- name: sentry-install | Install dependencies
   apt: name={{item}}
   with_items: [libxml2-dev, libxslt1-dev, zlib1g-dev, libffi-dev, libssl-dev]
 
