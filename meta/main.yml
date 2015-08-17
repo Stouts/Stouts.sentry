@@ -14,6 +14,12 @@ galaxy_info:
   - name: Ubuntu
     versions:
     - all
+  - name: Debian
+    versions:
+    - all
+  - name: RedHat
+    versions:
+    - all
   categories:
   - system
   - development

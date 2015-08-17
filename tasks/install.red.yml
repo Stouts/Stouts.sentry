@@ -1,0 +1,6 @@
+---
+
+- name: sentry-install | Install dependencies
+  yum: name={{item}}
+  with_items: [libxml2-devel, libxslt-devel, zlib-devel, libffi-devel, openssl-devel, daemonize]
+

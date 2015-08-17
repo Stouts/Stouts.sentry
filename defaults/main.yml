@@ -2,7 +2,7 @@
 
 sentry_enabled: yes                                       # Enable the role
 sentry_remove: no                                         # Uninstall the role
-sentry_version: 7.4.3
+sentry_version: 7.7.0
 sentry_home: /usr/lib/sentry                              # Deploy sentry to the folder
 sentry_user: sentry                                       # Run as user
 sentry_hostname: "{{inventory_hostname}}"
