@@ -51,8 +51,21 @@ server {
 
     location ~* /api/(?P<projectid>\d+/)?store/ {
       proxy_pass        http://{{sentry_web_host}}:{{sentry_web_port}};
+      proxy_redirect	off;
+
+      proxy_set_header	Host	$host;
+      proxy_set_header	X-Real-IP $remote_addr;
+      proxy_set_header	X-Forwarded-For	$proxy_add_x_forwarded_for;
+      proxy_set_header	X-Forwarded-Proto $scheme;
+
       limit_req   zone=one  burst=3  nodelay;
       limit_req   zone=two  burst=10  nodelay;
+    }
+
+    location /_static/ {
+        access_log off;
+        root {{sentry_home}};
+        expires max;
     }
 
 }
