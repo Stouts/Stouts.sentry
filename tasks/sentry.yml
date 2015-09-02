@@ -6,6 +6,9 @@
 - name: Ensure sentry directories exists
   file: state=directory path={{sentry_home}} owner={{sentry_user}}
 
+- name: Ensure sentry static dir exists
+  file: state=directory path={{sentry_home}}/_static owner={{sentry_user}}
+
 # Try to create virtualenv only if it doesn't exist.
 # This way we can re-run the playbook without errors.
 - name: Check existince of Sentry virtualenv
@@ -69,6 +72,9 @@
   when: config.changed
   sudo: yes
   sudo_user: "{{sentry_user}}"
+
+- name: Collect sentry static files
+  shell: "{{sentry_home}}/sentry --config={{sentry_home}}/config.py collectstatic --noinput"
 
 - name: Setup initial data
   template: src=setup.py.j2 dest={{sentry_home}}/setup.py owner={{sentry_user}} mode=0755

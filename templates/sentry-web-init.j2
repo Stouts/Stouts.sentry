@@ -21,7 +21,7 @@ start() {
     [ -x $exec ] || exit 5
     [ -f $config ] || exit 6
     echo -n $"Starting $prog: "
-    daemon --pidfile=pidfile $exec --config=$config run_gunicorn --daemon --pid=$pidfile --workers=3 --bind={{sentry_web_host}}:{{sentry_web_port}}
+    daemon --pidfile=pidfile $exec --config=$config run_gunicorn --daemon --pid=$pidfile --workers=3 --bind={{sentry_web_host}}:{{sentry_web_port}} --log-file=/var/log/sentry-web.log
     retval=$?
     echo
     [ $retval -eq 0 ] && touch $lockfile
