@@ -122,9 +122,11 @@ Example:
 ```yaml
 
 - hosts: all
+  sudo: true
 
   roles:
   - Stouts.foundation
+  - Stouts.python
   - Stouts.postfix
   - Stouts.sentry
 
