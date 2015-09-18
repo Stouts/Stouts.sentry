@@ -122,9 +122,11 @@ Example:
 ```yaml
 
 - hosts: all
+  sudo: true
 
   roles:
   - Stouts.foundation
+  - Stouts.python
   - Stouts.postfix
   - Stouts.sentry
 
@@ -142,3 +144,10 @@ Licensed under the MIT License. See the LICENSE file for details.
 
 Are [welcome](https://github.com/Stouts/Stouts.sentry/issues)!
 
+If you wish to express your appreciation for the role, you are welcome to send
+a postcard to:
+
+    Kirill Klenov
+    pos. Severny 8-3
+    MO, Istra, 143500
+    Russia
