@@ -9,7 +9,7 @@ CONF_ROOT = os.path.dirname(__file__)
 STATIC_ROOT = '{{sentry_home}}/_static'
 
 SECRET_KEY = '{{sentry_secret_key}}'
-SENTRY_URL_PREFIX = '{{ "https" if sentry_https_url else "http" }}://{{sentry_hostname}}{% if sentry_port != '80' %}:{{sentry_port}}{% endif %}'
+SENTRY_URL_PREFIX = '{{ "https" if sentry_https_url else "http" }}://{{sentry_hostname}}{% if sentry_port != 80 %}:{{sentry_port}}{% endif %}'
 
 DATABASES = {
     'default': {
