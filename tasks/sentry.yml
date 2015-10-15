@@ -68,7 +68,7 @@
 - file: state=directory path={{sentry_home}} owner={{sentry_user}} recurse=yes
 
 - name: Upgrade sentry
-  shell: "{{sentry_home}}/sentry --config={{sentry_home}}/config.py upgrade"
+  shell: "{{sentry_home}}/sentry --config={{sentry_home}}/config.py upgrade --noinput"
   when: config.changed
   sudo: yes
   sudo_user: "{{sentry_user}}"
