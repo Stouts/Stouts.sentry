@@ -10,6 +10,7 @@ STATIC_ROOT = '{{sentry_home}}/_static'
 
 SECRET_KEY = '{{sentry_secret_key}}'
 SENTRY_URL_PREFIX = '{{ "https" if sentry_https_url else "http" }}://{{sentry_hostname}}{% if sentry_port != '80' %}:{{sentry_port}}{% endif %}'
+SENTRY_ADMIN_EMAIL = '{{sentry_admin_email}}'
 
 DATABASES = {
     'default': {
@@ -49,6 +50,7 @@ SENTRY_REDIS_OPTIONS = {
         }
     }
 }
+SENTRY_TSDB = 'sentry.tsdb.redis.RedisTSDB'
 {% endif %}
 
 # If you're using a reverse proxy, you should enable the X-Forwarded-Proto
