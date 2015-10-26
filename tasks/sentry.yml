@@ -68,13 +68,18 @@
 - file: state=directory path={{sentry_home}} owner={{sentry_user}} recurse=yes
 
 - name: Upgrade sentry
-  shell: "{{sentry_home}}/sentry --config={{sentry_home}}/config.py upgrade"
-  when: config.changed
+  shell: "{{sentry_home}}/sentry upgrade --noinput"
+  register: sentry_upgrade
+  changed_when: sentry_upgrade.rc
   sudo: yes
   sudo_user: "{{sentry_user}}"
 
 - name: Collect sentry static files
-  shell: "{{sentry_home}}/sentry --config={{sentry_home}}/config.py collectstatic --noinput"
+  shell: "{{sentry_home}}/sentry collectstatic --noinput"
+  register: sentry_collected
+  changed_when: not sentry_collected.stderr.startswith('\n0 static files copied')
+  sudo: yes
+  sudo_user: "{{sentry_user}}"
 
 - name: Setup initial data
   template: src=setup.py.j2 dest={{sentry_home}}/setup.py owner={{sentry_user}} mode=0755
