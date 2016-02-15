@@ -5,9 +5,18 @@ limit_req_zone  $binary_remote_addr  zone=one:10m   rate=3r/s;
 limit_req_zone  $projectid  zone=two:10m   rate=3r/s;
 limit_req_status 429;
 
+{% if sentry_ssl_redirect -%}
+# Redirect HTTP to SSL
+server {
+    listen 80;
+    server_name {{sentry_hostname}};
+    rewrite ^(.*) https://$host$1 permanent;
+}
+{% endif %}
+
 server {
 
-    listen     {{ sentry_port|default(80) }};
+    listen      {{ sentry_port|default(80) }};
     server_name {{sentry_hostname}};
 
     {% if sentry_ssl_certificate %}

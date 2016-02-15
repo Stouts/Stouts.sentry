@@ -28,7 +28,6 @@ sentry_home: /usr/lib/sentry                              # Deploy sentry to the
 sentry_user: sentry                                       # Run as user
 sentry_hostname: "{{inventory_hostname}}"
 sentry_port: 80
-sentry_https_url: no
 sentry_secret_key: 1LsmGR1DIyCJ5n2bRG5IVOFHdzEPkTKlW0RzxZVe9S0vc
 sentry_extensions: []                                     # List of sentry-extensions
 
@@ -36,6 +35,7 @@ sentry_extensions: []                                     # List of sentry-exten
 sentry_python: python2.7                                  # In the case of multiple Python  installations
                                                           # Pick one for Sentry using specific virtualenv command
 
+sentry_ssl_redirect: no                                   # 80 -> 443
 sentry_ssl_certificate:                                   # SSL certificate file - also turns on HTTPS on Nginx
 sentry_ssl_certificate_key:                               # Key file for SSL cert
 
