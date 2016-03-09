@@ -14,19 +14,16 @@
 - name: Check existince of Sentry virtualenv
   stat: path={{sentry_home}}/env
   register: sentry_has_virtualenv
-  sudo: yes
-  sudo_user: "{{sentry_user}}"
+  become_user: "{{sentry_user}}"
 
 - name: Create virtualenv for Sentry using chosen Python
   when: sentry_has_virtualenv.stat.exists == False
   shell: virtualenv --python={{sentry_python}} {{sentry_home}}/env
-  sudo: yes
-  sudo_user: "{{sentry_user}}"
+  become_user: "{{sentry_user}}"
 
 - name: Install Sentry
-  pip: name=sentry executable={{sentry_home}}/env/bin/pip version={{sentry_version}}  virtualenv="{{sentry_home}}"/env
-  sudo: yes
-  sudo_user: "{{sentry_user}}"
+  shell: "{{sentry_home}}/env/bin/pip install sentry=={{sentry_version}}"
+  become_user: "{{sentry_user}}"
 
 - name: Install requirements for Redis
   pip: name={{item}} executable={{sentry_home}}/env/bin/pip
@@ -35,8 +32,7 @@
     - hiredis
     - nydus
     - django-redis-cache
-  sudo: yes
-  sudo_user: "{{sentry_user}}"
+  become_user: "{{sentry_user}}"
   when: redis_enabled
 
 - name: Install requirements for MySQL
@@ -71,15 +67,13 @@
   shell: "{{sentry_home}}/sentry upgrade --noinput"
   register: sentry_upgrade
   changed_when: sentry_upgrade.rc
-  sudo: yes
-  sudo_user: "{{sentry_user}}"
+  become_user: "{{sentry_user}}"
 
 - name: Collect sentry static files
   shell: "{{sentry_home}}/sentry collectstatic --noinput"
   register: sentry_collected
   changed_when: not sentry_collected.stderr.startswith('\n0 static files copied')
-  sudo: yes
-  sudo_user: "{{sentry_user}}"
+  become_user: "{{sentry_user}}"
 
 - name: Setup initial data
   template: src=setup.py.j2 dest={{sentry_home}}/setup.py owner={{sentry_user}} mode=0755
@@ -88,8 +82,7 @@
 - shell: env/bin/python setup.py
     chdir={{sentry_home}}
   when: setup.changed
-  sudo: yes
-  sudo_user: "{{sentry_user}}"
+  become_user: "{{sentry_user}}"
 
 - name: Configure Nginx
   template: src=nginx.conf.j2 dest={{nginx_dir|default('/etc/nginx')}}/sites-enabled/sentry.conf
