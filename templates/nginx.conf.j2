@@ -51,8 +51,8 @@ server {
     resolver_timeout {{sentry_nginx_timeout}};
     client_body_timeout {{sentry_nginx_timeout}};
 
-    client_max_body_size 150k;
-    client_body_buffer_size 150k;
+    client_max_body_size {{sentry_nginx_body_size}};
+    client_body_buffer_size {{sentry_nginx_body_size}};
 
     location / {
       proxy_pass        http://{{sentry_web_host}}:{{sentry_web_port}};
