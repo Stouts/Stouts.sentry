@@ -4,10 +4,8 @@
   user: name={{sentry_user}}
 
 - name: Ensure sentry directories exists
-  file: state=directory path={{sentry_home}} owner={{sentry_user}}
-
-- name: Ensure sentry static dir exists
-  file: state=directory path={{sentry_home}}/_static owner={{sentry_user}}
+  file: state=directory path={{sentry_home}}/_static owner={{sentry_user}} recurse=true
+- file: state=directory path={{sentry_home}}/_files owner={{sentry_user}} recurse=true
 
 # Try to create virtualenv only if it doesn't exist.
 # This way we can re-run the playbook without errors.
@@ -28,8 +26,6 @@
 - name: Install requirements for Redis
   pip: name={{item}} executable={{sentry_home}}/env/bin/pip
   with_items:
-    - redis
-    - hiredis
     - nydus
     - django-redis-cache
   become_user: "{{sentry_user}}"
@@ -45,7 +41,7 @@
 
 - name: Install extensions
   pip: name={{item}} executable={{sentry_home}}/env/bin/pip
-  with_items: sentry_extensions
+  with_items: "{{sentry_extensions}}"
 
 - name: Prepare Sentry
   template: src=sentry.j2 dest={{sentry_home}}/sentry owner={{sentry_user}} mode=0755
@@ -56,12 +52,13 @@
 - include: services.red.yml
   when: ansible_os_family == 'RedHat'
 
-- name: Configure Sentry
-  template: src=config.py.j2 dest={{sentry_home}}/config.py owner={{sentry_user}}
-  register: config
+- name: Configure Sentry pt.1
+  template: src=sentry.conf.py dest={{sentry_home}}/sentry.conf.py owner={{sentry_user}}
   notify: [sentry restart]
 
-- file: state=directory path={{sentry_home}} owner={{sentry_user}} recurse=yes
+- name: Configure Sentry pt.2
+  template: src=config.yml dest={{sentry_home}}/config.yml owner={{sentry_user}}
+  notify: [sentry restart]
 
 - name: Upgrade sentry
   shell: "{{sentry_home}}/sentry upgrade --noinput"
@@ -70,22 +67,17 @@
   become_user: "{{sentry_user}}"
 
 - name: Collect sentry static files
-  shell: "{{sentry_home}}/sentry collectstatic --noinput"
+  shell: "{{sentry_home}}/sentry django collectstatic --noinput"
   register: sentry_collected
   changed_when: not sentry_collected.stderr.startswith('\n0 static files copied')
   become_user: "{{sentry_user}}"
 
-- name: Setup initial data
-  template: src=setup.py.j2 dest={{sentry_home}}/setup.py owner={{sentry_user}} mode=0755
-  register: setup
-
-- shell: env/bin/python setup.py
-    chdir={{sentry_home}}
-  when: setup.changed
-  become_user: "{{sentry_user}}"
+- name: Setup superusers
+  shell: "{{sentry_home}}/sentry createuser --email={{item.email}} --password={{item.password}} --no-input --superuser || true"
+  with_items: "{{sentry_admins}}"
 
 - name: Configure Nginx
-  template: src=nginx.conf.j2 dest={{nginx_dir|default('/etc/nginx')}}/sites-enabled/sentry.conf
+  template: src=nginx.conf dest={{nginx_dir|default('/etc/nginx')}}/sites-enabled/sentry.conf
   notify: [nginx reload]
   when: nginx_enabled
 

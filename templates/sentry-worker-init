@@ -1,27 +1,29 @@
 #!/bin/sh
 #
-# Sentry web server.
+# Sentry worker.
 #
 # chkconfig:   - 20 80
-# description: Run a Sentry web-server service.
+# description: Run Celery worker for Sentry.
 
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-exec="{{sentry_home}}/env/bin/sentry "
-prog="sentry-web"
-config="{{sentry_home}}/config.py"
+exec="{{sentry_home}}/env/bin/sentry"
+prog="sentry-worker"
+config={{sentry_home}}
 pidfile="/var/run/$prog"
 
 [ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
 
 lockfile=/var/lock/subsys/$prog
 
+export C_FORCE_ROOT=true
+
 start() {
     [ -x $exec ] || exit 5
     [ -f $config ] || exit 6
     echo -n $"Starting $prog: "
-    daemon --pidfile=pidfile $exec --config=$config run_gunicorn --daemon --pid=$pidfile --workers=3 --bind={{sentry_web_host}}:{{sentry_web_port}} --log-file=/var/log/sentry-web.log
+    daemonize -c {{sentry_home}} -l $lockfile $exec --config=$config sentry run worker -A sentry.celery --beat --pidfile=$pidfile --logfile=/var/log/sentry-worker.log
     retval=$?
     echo
     [ $retval -eq 0 ] && touch $lockfile

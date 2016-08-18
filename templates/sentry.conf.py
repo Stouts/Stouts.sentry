@@ -5,13 +5,18 @@ from sentry.conf.server import *
 
 import os.path
 
+# Directories
 CONF_ROOT = os.path.dirname(__file__)
 STATIC_ROOT = '{{sentry_home}}/_static'
 
-SECRET_KEY = '{{sentry_secret_key}}'
-SENTRY_URL_PREFIX = '{{ "https" if sentry_ssl_certificate else "http" }}://{{sentry_hostname}}{% if sentry_port != '80' %}:{{sentry_port}}{% endif %}'
-SENTRY_ADMIN_EMAIL = '{{sentry_admin_email}}'
+# Optimization
+SENTRY_USE_BIG_INTS = True
+SENTRY_SINGLE_ORGANIZATION = {{sentry_single_organization and 'True' or 'False'}}
+SENTRY_RATELIMITER = 'sentry.ratelimits.redis.RedisRateLimiter'
+SENTRY_QUOTAS = 'sentry.quotas.redis.RedisQuota'
+SENTRY_DIGESTS = 'sentry.digests.backends.redis.RedisBackend'
 
+# Setup database
 DATABASES = {
     'default': {
         'ENGINE': '{{sentry_db_engine}}',
@@ -24,7 +29,12 @@ DATABASES = {
     }
 }
 
-SENTRY_CACHE = 'sentry.cache.django.DjangoCache'
+
+
+SENTRY_ADMIN_EMAIL = '{{sentry_admins[0].email}}'
+
+# A primary cache is required for things such as processing events
+SENTRY_CACHE = 'sentry.cache.redis.RedisCache'
 
 {% if sentry_cache_backend and sentry_cache_location %}
 CACHES = {
@@ -42,14 +52,6 @@ BROKER_URL = '{{sentry_broker_url}}'
 
 {% if sentry_buffer %}
 SENTRY_BUFFER = '{{sentry_buffer}}'
-SENTRY_REDIS_OPTIONS = {
-    'hosts': {
-        0: {
-            'host': '{{sentry_redis_host}}',
-            'port': {{sentry_redis_port}},
-        }
-    }
-}
 SENTRY_TSDB = 'sentry.tsdb.redis.RedisTSDB'
 {% endif %}
 
@@ -58,16 +60,27 @@ SENTRY_TSDB = 'sentry.tsdb.redis.RedisTSDB'
 {% if nginx_enabled %}
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 {% endif %}
 
 SENTRY_WEB_HOST = '{{sentry_web_host}}'
 SENTRY_WEB_PORT = {{sentry_web_port}}
 SENTRY_WEB_OPTIONS = {{sentry_web_options|to_nice_json}}
 
-SERVER_EMAIL = '{{sentry_server_email}}'
-{% for option in sentry_email_settings or [] %}
-{{option}}
-{% endfor %}
+# Filestore
+SENTRY_FILESTORE = 'django.core.files.storage.FileSystemStorage'
+SENTRY_FILESTORE_OPTIONS = {
+    'location': '{{sentry_home}}/_files'
+}
+
+{% if not sentry_auth_register %}
+SENTRY_FEATURES['auth:register'] = False
+{% endif %}
+
+{% if sentry_beacon %}
+SENTRY_BEACON = True
+{% endif %}
 
 TWITTER_CONSUMER_KEY = '{{sentry_twitter_consumer_key}}'
 TWITTER_CONSUMER_SECRET = '{{sentry_twitter_consumer_secret}}'
@@ -77,6 +90,7 @@ GOOGLE_OAUTH2_CLIENT_ID = '{{sentry_google_oauth2_client_id}}'
 GOOGLE_OAUTH2_CLIENT_SECRET = '{{sentry_google_oauth2_client_secret}}'
 GITHUB_APP_ID = '{{sentry_github_app_id}}'
 GITHUB_API_SECRET = '{{sentry_github_api_secret}}'
+GITHUB_EXTENDED_PERMISSIONS = ['repo']
 TRELLO_API_KEY = '{{sentry_trello_api_key}}'
 TRELLO_API_SECRET = '{{sentry_trello_api_secret}}'
 BITBUCKET_CONSUMER_KEY = '{{sentry_bitbucket_consumer_key}}'
