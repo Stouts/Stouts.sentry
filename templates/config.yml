@@ -1,0 +1,20 @@
+---
+
+system.admin-email: "{{sentry_admins[0].email}}"
+system.url-prefix: "{{ 'https' if sentry_ssl_certificate else 'http' }}://{{sentry_hostname}}{% if sentry_port != '80' %}:{{sentry_port}}{% endif %}"
+system.rate-limit: 0
+system.secret-key: "{{sentry_secret_key}}"
+
+mail.from: "{{sentry_mail_from}}"
+mail.host: "{{sentry_mail_host}}"
+mail.port: {{sentry_mail_port}}
+mail.username: "{{sentry_mail_username}}"
+mail.password: "{{sentry_mail_password}}"
+{%if sentry_mail_use_tls %}mail.use-tls: true{% endif %}
+
+redis.clusters:
+    default:
+        hosts:
+            0:
+                host: "{{redis_bind}}"
+                port: {{redis_port}}
