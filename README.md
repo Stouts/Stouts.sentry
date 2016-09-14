@@ -35,6 +35,7 @@ sentry_extensions: []                                     # List of sentry-exten
 sentry_python: python2.7                                  # In the case of multiple Python  installations
                                                           # Pick one for Sentry using specific virtualenv command
 
+sentry_ssl: no                                            # Enable SSL
 sentry_ssl_redirect: no                                   # 80 -> 443
 sentry_ssl_certificate:                                   # SSL certificate file - also turns on HTTPS on Nginx
 sentry_ssl_certificate_key:                               # Key file for SSL cert

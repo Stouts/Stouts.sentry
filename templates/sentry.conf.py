@@ -57,7 +57,7 @@ SENTRY_TSDB = 'sentry.tsdb.redis.RedisTSDB'
 
 # If you're using a reverse proxy, you should enable the X-Forwarded-Proto
 # and X-Forwarded-Host headers, and uncomment the following settings
-{% if nginx_enabled %}
+{% if sentry_ssl %}
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
 SESSION_COOKIE_SECURE = True
