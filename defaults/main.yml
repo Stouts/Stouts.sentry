@@ -31,6 +31,7 @@ sentry_beacon: on
 sentry_auth_register: on
 sentry_single_organization: on
 
+sentry_ssl: no
 sentry_ssl_redirect: no                                   # 80 -> 443
 sentry_ssl_certificate:                                   # SSL certificate file - also turns on HTTPS on Nginx
 sentry_ssl_certificate_key:                               # Key file for SSL cert
