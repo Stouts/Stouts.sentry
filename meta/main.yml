@@ -1,10 +1,5 @@
 ---
 
-dependencies:
-- Stouts.nginx
-- Stouts.python
-- Stouts.redis
-
 galaxy_info:
   author: klen
   company: Stouts
