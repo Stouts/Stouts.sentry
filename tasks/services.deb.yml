@@ -1,9 +1,17 @@
 ---
 
-- name: Configure Services
-  template: src={{item}}.conf dest=/etc/init/{{item}}.conf
+- name: Configure Services with Upstart
+  template: src=services/{{item}}.upstart dest=/etc/init/sentry-{{item}}.conf
   with_items:
-  - sentry-web
-  - sentry-worker
-  notify:
-  - sentry reload
+  - web
+  - worker
+  notify: sentry reload
+  when: sentry_service == 'upstart'
+
+- name: Configure Services with Systemd
+  template: src=services/{{item}}.systemd dest=/etc/systemd/system/sentry-{{item}}.service
+  with_items:
+  - web
+  - worker
+  notify: sentry restart
+  when: sentry_service == 'systemd'

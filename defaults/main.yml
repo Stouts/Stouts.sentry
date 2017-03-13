@@ -9,6 +9,7 @@ sentry_hostname: "{{inventory_hostname}}"
 sentry_port: 80
 sentry_secret_key: 1LsmGR1DIyCJ5n2bRG5IVOFHdzEPkTKlW0RzxZVe9S0vc
 sentry_extensions: []                                     # List of sentry-extensions
+sentry_service: systemd
 
 # Python configuration
 sentry_python: python2.7                                  # In the case of multiple Python  installations
