@@ -1,9 +1,9 @@
 ---
 
 - name: Configure Services
-  template: src={{item}}-init dest=/etc/init.d/{{item}} mode=0755
+  template: src=services/{{item}}-init dest=/etc/init.d/sentry-{{item}} mode=0755
   with_items:
-  - sentry-web
-  - sentry-worker
+  - web
+  - worker
   notify:
   - sentry reload

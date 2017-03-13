@@ -1,0 +1,17 @@
+[Unit]
+Description=Sentry Celery Application
+After=local-fs.target network.target
+Requires=local-fs.target network.target
+
+[Service]
+User={{sentry_user}}
+WorkingDirectory={{sentry_home}}
+ExecStart={{sentry_home}}/env/bin/sentry --config={{sentry_home}} celery worker -B
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=multi-user.target
+

@@ -9,6 +9,7 @@ sentry_hostname: "{{inventory_hostname}}"
 sentry_port: 80
 sentry_secret_key: 1LsmGR1DIyCJ5n2bRG5IVOFHdzEPkTKlW0RzxZVe9S0vc
 sentry_extensions: []                                     # List of sentry-extensions
+sentry_service: systemd
 
 # Python configuration
 sentry_python: python2.7                                  # In the case of multiple Python  installations
@@ -31,6 +32,7 @@ sentry_beacon: on
 sentry_auth_register: on
 sentry_single_organization: on
 
+sentry_ssl: no
 sentry_ssl_redirect: no                                   # 80 -> 443
 sentry_ssl_certificate:                                   # SSL certificate file - also turns on HTTPS on Nginx
 sentry_ssl_certificate_key:                               # Key file for SSL cert
