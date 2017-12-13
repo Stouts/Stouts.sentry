@@ -1,6 +1,0 @@
----
-
-- name: sentry-install | Install dependencies
-  apt: name={{item}} force=yes
-  with_items: [libxml2-dev, libxslt1-dev, zlib1g-dev, libffi-dev, libssl-dev, libjpeg-dev]
-

@@ -1,13 +1,7 @@
 ---
 
 - name: sentry restart
-  service: name={{item}} state=restarted
-  with_items:
-    - sentry-web
-    - sentry-worker
-
-- name: sentry reload
-  service: name={{item}} state=reloaded
-  with_items:
-    - sentry-web
-    - sentry-worker
+  docker_container:
+    name: sentry
+    state: started
+    restart: true

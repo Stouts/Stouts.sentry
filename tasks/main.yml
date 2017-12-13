@@ -1,17 +1,5 @@
 ---
 
-- include: install.deb.yml
-  when: ansible_os_family == 'Debian'
-  tags: [sentry, sentry-install]
-
-- include: install.red.yml
-  when: ansible_os_family == 'RedHat'
-  tags: [sentry, sentry-install]
-
 - include: sentry.yml
   when: sentry_enabled
   tags: [sentry]
-
-- include: remove.yml
-  when: sentry_remove
-  tags: [sentry, sentry-remove]

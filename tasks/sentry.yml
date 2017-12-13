@@ -1,88 +1,112 @@
 ---
-# vim:sw=2:ft=ansible
-- name: Ensure sentry user exists
-  user: name={{sentry_user}}
 
 - name: Ensure sentry directories exists
-  file: state=directory path={{sentry_home}}/_static owner={{sentry_user}} recurse=true
-- file: state=directory path={{sentry_home}}/_files owner={{sentry_user}} recurse=true
-
-# Try to create virtualenv only if it doesn't exist.
-# This way we can re-run the playbook without errors.
-- name: Check existince of Sentry virtualenv
-  stat: path={{sentry_home}}/env
-  register: sentry_has_virtualenv
-  become_user: "{{sentry_user}}"
-
-- name: Create virtualenv for Sentry using chosen Python
-  when: sentry_has_virtualenv.stat.exists == False
-  shell: virtualenv --python={{sentry_python}} {{sentry_home}}/env
-  become_user: "{{sentry_user}}"
-
-- name: Install Sentry
-  shell: "{{sentry_home}}/env/bin/pip install sentry=={{sentry_version}}"
-  become_user: "{{sentry_user}}"
-
-- name: Install requirements for Redis
-  pip: name={{item}} executable={{sentry_home}}/env/bin/pip
+  file: state=directory path={{item}} recurse=true
   with_items:
-    - nydus
-    - django-redis-cache
-  become_user: "{{sentry_user}}"
-  when: redis_enabled
+  - "{{sentry_home}}/data" 
+  - "{{sentry_home}}/docker" 
+  - "{{sentry_filestore_location}}" 
 
-- name: Install requirements for MySQL
-  pip: name=mysql-python executable={{ sentry_home }}/env/bin/pip
-  when: "'mysql' in sentry_db_engine|lower()"
+- name: Configure Sentry
+  template: src={{item}} dest={{sentry_home}}/docker/{{item}} mode=0755
+  with_items:
+  - sentry.conf.py
+  - config.yml
+  - Dockerfile
+  - requirements.txt
+  register: sentry_config
+  notify: sentry restart
 
-- name: Install requirements for Postgresql
-  pip: name=psycopg2 executable={{ sentry_home }}/env/bin/pip
-  when: "'psycopg2' in sentry_db_engine|lower()"
+- name: Rebuild Sentry
+  docker_image:
+    path: "{{sentry_home}}/docker"
+    name: sentry
+    force: true
+    tag: local
+  when: sentry_config.changed
 
-- name: Install extensions
-  pip: name={{item}} executable={{sentry_home}}/env/bin/pip
-  with_items: "{{sentry_extensions}}"
+- name: Create a network
+  docker_network:
+    name: sentry
 
-- name: Prepare Sentry
-  template: src=sentry.j2 dest={{sentry_home}}/sentry owner={{sentry_user}} mode=0755
+- name: Run postgresql
+  docker_container:
+    name: postgres
+    image: postgres:9.5
+    restart_policy: always
+    volumes:
+    - "{{sentry_home}}/data:/var/lib/postgresql/data"
+    networks:
+    - name: sentry
+    env:
+      POSTGRES_PASSWORD: "{{ sentry_db_password }}"
+      POSTGRES_USER: "{{ sentry_db_user }}"
+      POSTGRES_DB: "{{ sentry_db_name }}"
+  when: sentry_postgres
 
-- include: services.deb.yml
-  when: ansible_os_family == 'Debian'
+- name: Run redis
+  docker_container:
+    name: redis
+    image: redis:3.2-alpine
+    restart_policy: always
+    networks:
+    - name: sentry
+  when: sentry_redis
 
-- include: services.red.yml
-  when: ansible_os_family == 'RedHat'
+- name: Run memcached
+  docker_container:
+    name: memcached
+    image: memcached:1.4
+    restart_policy: always
+    networks:
+    - name: sentry
+  when: sentry_memcached
 
-- name: Configure Sentry pt.1
-  template: src=sentry.conf.py dest={{sentry_home}}/sentry.conf.py owner={{sentry_user}}
-  notify: [sentry restart]
+- name: Upgrade Sentry
+  docker_container:
+    command: upgrade --noinput
+    detach: false
+    image: sentry:local
+    name: sentry
+    networks:
+    - name: sentry
+  when: sentry_config.changed
 
-- name: Configure Sentry pt.2
-  template: src=config.yml dest={{sentry_home}}/config.yml owner={{sentry_user}}
-  notify: [sentry restart]
+- name: Start Sentry-Web
+  docker_container:
+    command: run web
+    image: sentry:local
+    name: sentry
+    restart_policy: always
+    networks:
+    - name: sentry
+    ports:
+    - "{{sentry_web_host}}:{{sentry_web_port}}:9000"
 
-- name: Upgrade sentry
-  shell: "{{sentry_home}}/sentry upgrade --noinput"
-  register: sentry_upgrade
-  changed_when: sentry_upgrade.rc
-  become_user: "{{sentry_user}}"
+- name: Start Sentry-Worker
+  docker_container:
+    command: run worker
+    image: sentry:local
+    name: sentry-worker
+    restart_policy: always
+    networks:
+    - name: sentry
 
-- name: Collect sentry static files
-  shell: "{{sentry_home}}/sentry django collectstatic --noinput"
-  register: sentry_collected
-  changed_when: not sentry_collected.stderr.startswith('\n0 static files copied')
-  become_user: "{{sentry_user}}"
+- name: Start Sentry-Cron
+  docker_container:
+    command: run cron
+    image: sentry:local
+    name: sentry-cron
+    restart_policy: always
+    networks:
+    - name: sentry
 
 - name: Setup superusers
-  shell: "{{sentry_home}}/sentry createuser --email={{item.email}} --password={{item.password}} --no-input --superuser || true"
+  command: "docker exec sentry sentry createuser --email={{item.email}} --password={{item.password}} --no-input --superuser"
+  ignore_errors: true
   with_items: "{{sentry_admins}}"
 
 - name: Configure Nginx
   template: src=nginx.conf dest={{nginx_dir|default('/etc/nginx')}}/sites-enabled/sentry.conf
   notify: [nginx reload]
-  when: nginx_enabled
-
-- name: Ensure Sentry is started
-  service: name={{item}} state=started
-  with_items:
-  - sentry-web
-  - sentry-worker
+  when: sentry_nginx
