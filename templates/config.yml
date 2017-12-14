@@ -32,6 +32,7 @@ mail.mailgun-api-key: '{{sentry_mail_mailgun_api_key}}'
 # Changing this value will result in all current sessions being invalidated.
 # A new key can be generated with `$ sentry config generate-secret-key`
 system.secret-key: "{{sentry_secret_key}}"
+system.url-prefix: "{{ sentry_use_ssl and 'https' or 'http'}}://{{sentry_hostname}}"
 {% if sentry_admins %}
 system.admin-email: "{{sentry_admins[0].email}}"
 {% endif %}
