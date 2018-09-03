@@ -80,6 +80,7 @@
     restart_policy: always
     networks:
     - name: sentry
+    links: "{{sentry_links|default(omit)}}"
     ports:
     - "{{sentry_web_host}}:{{sentry_web_port}}:9000"
 
