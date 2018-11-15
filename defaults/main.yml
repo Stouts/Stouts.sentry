@@ -1,7 +1,7 @@
 ---
 
 sentry_enabled: true                                        # Enable the role
-sentry_version: 8.22
+sentry_version: 9
 sentry_secret_key: replaceme                                # Setup secret key for Sentry installation
 
 sentry_home: /opt/sentry

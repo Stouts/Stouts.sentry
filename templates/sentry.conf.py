@@ -152,6 +152,7 @@ SENTRY_FEATURES['auth:register'] = False
 SENTRY_BEACON = True
 {% endif %}
 
+
 # Additional settings
 {% for option in sentry_config_additional or [] %}
 {{option}}

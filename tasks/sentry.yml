@@ -23,6 +23,7 @@
     name: sentry
     force: true
     tag: local
+    pull: true
   when: sentry_config.changed
 
 - name: Create a network
