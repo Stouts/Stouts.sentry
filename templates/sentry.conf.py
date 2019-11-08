@@ -120,9 +120,9 @@ SENTRY_DIGESTS = 'sentry.digests.backends.redis.RedisBackend'
 
 {% if sentry_use_ssl %}
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-USE_X_FORWARDED_HOST = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 {% endif %}
 
 SENTRY_WEB_HOST = '0.0.0.0'
@@ -152,8 +152,16 @@ SENTRY_FEATURES['auth:register'] = False
 SENTRY_BEACON = True
 {% endif %}
 
+#####################
+# SLACK INTEGRATION #
+#####################
+slack = env('SLACK_CLIENT_ID') and env('SLACK_CLIENT_SECRET')
+if slack:
+    SENTRY_OPTIONS['slack.client-id'] = env('SLACK_CLIENT_ID')
+    SENTRY_OPTIONS['slack.client-secret'] = env('SLACK_CLIENT_SECRET')
+    SENTRY_OPTIONS['slack.verification-token'] = env('SLACK_VERIFICATION_TOKEN') or ''
 
 # Additional settings
-{% for option in sentry_config_additional or [] %}
+{% for option in sentry_config_py or [] %}
 {{option}}
 {% endfor %}

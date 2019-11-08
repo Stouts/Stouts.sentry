@@ -3,13 +3,15 @@
 sentry_enabled: true                                        # Enable the role
 sentry_version: 9
 sentry_secret_key: replaceme                                # Setup secret key for Sentry installation
+sentry_env: {}
 
 sentry_home: /opt/sentry
 sentry_hostname: "{{inventory_hostname}}"
 sentry_single_organization: true
 
 sentry_plugins: []                                          # Setup plugins
-sentry_config_additional: []                                # List of additional options
+sentry_config_py: []                                        # List of additional options
+sentry_config_yaml: []                                      # List of additional options
 
 # Postgresql
 sentry_postgres_host: postgres
@@ -44,7 +46,7 @@ sentry_filestore_bucket_name: ""
 sentry_use_ssl: false
 sentry_nginx: true
 sentry_nginx_port: 80
-sentry_nginx_ssl_redirect: "{{sentry_use_ssl}}"                 # 80 -> 443
+sentry_nginx_ssl_redirect: "{{sentry_use_ssl and sentry_nginx_ssl_certificate}}"                 # 80 -> 443
 sentry_nginx_ssl_certificate:                                   # SSL certificate file - also turns on HTTPS on Nginx
 sentry_nginx_ssl_certificate_key:                               # Key file for SSL cert
 sentry_nginx_timeout: 15s

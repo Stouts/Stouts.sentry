@@ -84,6 +84,7 @@
     links: "{{sentry_links|default(omit)}}"
     ports:
     - "{{sentry_web_host}}:{{sentry_web_port}}:9000"
+    env: "{{ sentry_env }}"
 
 - name: Start Sentry-Worker
   docker_container:
@@ -93,6 +94,7 @@
     restart_policy: always
     networks:
     - name: sentry
+    env: "{{ sentry_env }}"
 
 - name: Start Sentry-Cron
   docker_container:
@@ -102,6 +104,7 @@
     restart_policy: always
     networks:
     - name: sentry
+    env: "{{ sentry_env }}"
 
 - name: Setup superusers
   command: "docker exec sentry sentry createuser --email={{item.email}} --password={{item.password}} --no-input --superuser"
