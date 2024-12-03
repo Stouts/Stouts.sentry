@@ -1,5 +1,5 @@
 ---
 
-- include: sentry.yml
+- include_tasks: sentry.yml
   when: sentry_enabled
   tags: [sentry]
